@@ -1,0 +1,221 @@
+# ============================================================
+# SOAL 1 — Modified Binary Search (Versi Alternatif)
+# ============================================================
+
+def left_index(arr, key):
+    start = 0
+    end = len(arr) - 1
+    pos = -1
+
+    while start <= end:
+        mid = (start + end) // 2
+
+        if arr[mid] >= key:
+            end = mid - 1
+        else:
+            start = mid + 1
+
+        if arr[mid] == key:
+            pos = mid
+
+    return pos
+
+
+def right_index(arr, key):
+    start = 0
+    end = len(arr) - 1
+    pos = -1
+
+    while start <= end:
+        mid = (start + end) // 2
+
+        if arr[mid] <= key:
+            start = mid + 1
+        else:
+            end = mid - 1
+
+        if arr[mid] == key:
+            pos = mid
+
+    return pos
+
+
+def count_occurrences(arr, key):
+    left = left_index(arr, key)
+    right = right_index(arr, key)
+
+    if left == -1:
+        return 0
+
+    return right - left + 1
+
+# ============================================================
+# SOAL 2 — Bubble Sort (Versi Alternatif)
+# ============================================================
+
+def bubble_sort_analysis(lst):
+
+    arr = lst[:]
+    n = len(arr)
+
+    comparisons = 0
+    swaps = 0
+    passes = 0
+
+    for i in range(n):
+
+        changed = False
+
+        for j in range(0, n-i-1):
+
+            comparisons += 1
+
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swaps += 1
+                changed = True
+
+        passes += 1
+        print("Pass", passes, ":", arr)
+
+        if not changed:
+            print("Early stop pada pass", passes)
+            break
+
+    return arr, comparisons, swaps, passes
+
+
+def test_bubble(arr):
+
+    print("Input :", arr)
+
+    result = bubble_sort_analysis(arr)
+
+    print("Output:", result[0])
+    print("Comparisons:", result[1])
+    print("Swaps:", result[2])
+    print("Passes:", result[3])
+
+
+test_bubble([5,1,4,2,8])
+test_bubble([1,2,3,4,5])
+print("SOAL 1")
+data = [1,2,4,4,4,4,7,9,12]
+
+print(count_occurrences(data,4))
+print(count_occurrences(data,5))
+print(count_occurrences(data,1))
+
+# ============================================================
+# SOAL 3 — Hybrid Sort (Versi Alternatif)
+# ============================================================
+
+import random
+
+def insertion_v2(data):
+
+    arr = data[:]
+    comp = 0
+    swap = 0
+
+    for i in range(1,len(arr)):
+
+        temp = arr[i]
+        j = i-1
+
+        while j >= 0 and arr[j] > temp:
+            comp += 1
+            arr[j+1] = arr[j]
+            swap += 1
+            j -= 1
+
+        arr[j+1] = temp
+
+    return arr, comp, swap
+
+
+def selection_v2(data):
+
+    arr = data[:]
+    comp = 0
+    swap = 0
+
+    for i in range(len(arr)-1):
+
+        idx = i
+
+        for j in range(i+1,len(arr)):
+            comp += 1
+
+            if arr[j] < arr[idx]:
+                idx = j
+
+        if idx != i:
+            arr[i], arr[idx] = arr[idx], arr[i]
+            swap += 1
+
+    return arr, comp, swap
+
+
+def hybrid_sort(data, limit=10):
+
+    if len(data) <= limit:
+        return insertion_v2(data)
+    else:
+        return selection_v2(data)
+
+
+sizes = [50,100,500]
+
+print("Size  Algorithm      Comparisons  Swaps")
+
+for s in sizes:
+
+    random.seed(42)
+    arr = [random.randint(1,1000) for _ in range(s)]
+
+    for name, func in [
+        ("Hybrid", hybrid_sort),
+        ("Insertion", insertion_v2),
+        ("Selection", selection_v2)
+    ]:
+
+        _,c,sw = func(arr)
+
+        print(s, name, c, sw)
+
+# ============================================================
+# SOAL 4 — Merge 3 Sorted Lists (Versi Alternatif)
+# ============================================================
+
+def merge_three(a,b,c):
+
+    result = []
+
+    i=j=k=0
+
+    while i < len(a) or j < len(b) or k < len(c):
+
+        va = a[i] if i < len(a) else float("inf")
+        vb = b[j] if j < len(b) else float("inf")
+        vc = c[k] if k < len(c) else float("inf")
+
+        smallest = min(va,vb,vc)
+
+        result.append(smallest)
+
+        if smallest == va:
+            i+=1
+        elif smallest == vb:
+            j+=1
+        else:
+            k+=1
+
+    return result
+
+
+A=[1,5,9]
+B=[2,6,10]
+C=[3,4,7]
+
+print(merge_three(A,B,C))
